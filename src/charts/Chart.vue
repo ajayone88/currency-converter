@@ -3,25 +3,14 @@
         <h1>Currency History:</h1>
         <form>
             <div class="form-group">
-                <label 
-                    for="dateOfHistory" 
-                    class="form-label">Select the Date</label>
                 <input 
                     id="dateOfHistory" 
-                    class="form-control" 
                     type="date"
                     pattern="\d{4}-\d{2}-\d{2}"
                     :max="maxDate" 
                     @change="selectDate"
                     v-model="dateOfHistory"/>
-            </div>
-             <div class="form-group">
-                <label 
-                    for="newCurrency" 
-                    class="form-label">Select Currency</label>
-                 <select 
-                    class="form-control-selection" 
-                    v-model="selectedCode">
+                 <select v-model="selectedCode">
                     <option 
                         v-for="(value, key) in getCurrentExchangeRatesForBase" 
                         :key="key" :value="key">{{ key }}</option>
@@ -77,7 +66,7 @@
                 const dates = Object.keys(this.graphData).sort((a, b) =>{
                     const date1 = new Date(a);
                     const date2 = new Date(b);
-                   return   date1 - date2;
+                   return  date1 - date2;
                 });
                 for(const key of dates){
                    this.xaxis['categories'].push(key);
@@ -107,33 +96,19 @@
 </script>
 
 <style scoped>
-    h1{
-        margin:16px 0;
-    }
-   .form-group{
-        margin:16px 0;
-    }
-    .form-label{
-       display: block;
-       font-size:2rem;
-       margin-bottom:4px;
-    }
-    .form-control{
-        width:250px;
-        height:40px;
-        font-size:20px;
-        padding:0 16px;
-    }
-    .form-control-selection{
-        margin:8px 0;
-        width:150px;
-        height:45px;
-        font-size:20px;
-        padding:0 16px;
-    }
     #chart{
-        margin: 16px auto;
+        margin:8px;
         background-color: white;
+    }
+    .form-group{
+        max-width:350px;
+        margin-left:0;
+    }
 
+    @media(max-width:450px){
+        h1{
+            padding-top:16px;
+            text-align:center;
+        }
     }
 </style>

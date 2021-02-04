@@ -1,13 +1,10 @@
 <template>
-    <div>
-        <ul>
-            <h1>All in one currency converter</h1>
-            <li v-for="(value, key) in menuItems" :key="key" @click="$emit('toggleComponent', key)">{{ value }}</li>
-        </ul>
-        <div class="smallHeader">
-            <h1>Converter</h1>
-            <hr>
-            <span v-for="(value, key) in menuItems" :key="key" @click="$emit('toggleComponent', key)">{{ value }}</span>
+    <div class="container_content">
+        <h1 class="short_brand">CC</h1>
+        <h1 class="long_brand">Currency converter</h1>
+        <div class="menu_items">
+            <a v-for="(value, key) in menuItems" :key="key" 
+            @click="$emit('toggleComponent', key)">{{ value }}</a>
         </div>
     </div>
 </template>
@@ -26,49 +23,40 @@
 </script>
 
 <style scoped>
-    .smallHeader{
-        display: none;
+    .short_brand{
+        flex:1;
+        display:none;
     }
-    div {
-        background-color:#845ec2;
+    .long_brand{
+        flex:1;
+        display:block;
     }
-
-    ul {
+    .container_content{
         display:flex;
-        justify-content: flex-end;
-        list-style: none;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        background:#252525;
+        color:white;
+        padding:10px 25px;
+    }
+    .menu_items{
+        display:flex;
+        justify-content: center;
+        align-items:center;
     }
 
-    h1{
-        align-self: center;
-        flex-grow: 1;
-        margin-left:32px;
-    }
-
-    li {
+    .menu_items a{
         cursor: pointer;
-        background-color: white;
-        margin:16px;
-        padding:8px 16px;
-        border-radius: 5px;
+        text-decoration: none;
+        margin-left:20px;
     }
 
-    @media(max-width:850px){ 
-        ul{
-            display:none;
-        }
-        .smallHeader{
+    @media(max-width:620px){
+        .short_brand{
             display:block;
         }
-        h1{
-            text-align: center;
-            margin-left:0px;
-        }
-        span{
-           padding:8px;
-           display:block;
-           color:white;
+        .long_brand{
+            display:none;
         }
     }
-
 </style>

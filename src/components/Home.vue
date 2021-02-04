@@ -1,76 +1,66 @@
 <template>
     <div class="container">
-       <teleport to="body">
-            <dialog-card v-if="showDialog">
-                <h1>Transfer done</h1>
-                <button type="button" class="btn" @click="showDialog = !showDialog">Close</button>
-            </dialog-card>
-       </teleport>
         <base-card>
-            <div class="upper-box">
+            <div class="container_content">
                 <form>
+                    <h3 for="inputCurrency">You Have</h3>
                     <div class="form-group">
-                        <label 
-                            for="inputCurrency" 
-                            class="form-label">You Have</label>
                         <input 
                             id="inputCurrency" 
-                            class="form-control"
                             type="number"
                             @input ="calculateConversion('inputCurrency');"
                             v-model="inputCurrency"/>
-                        <select 
-                            class="form-control-selection" v-model="inputCurrencyCode">
+                        <select v-model="inputCurrencyCode">
                             <option 
                                 v-for="(value, key) in currentRates" 
                                 :key="key" :value="key">{{ key }}</option>
                         </select>
                     </div>
                     <div class="form-group">
-                        <div class="image-container">
-                            <img class="imageClass" @click="exchange" src="../assets/refresh.png" alt="Refresh"/>
-                        </div>
+                        <h1 class="image" @click="exchange">↕️</h1>
+                        <!-- <img class="image" @click="exchange" src="../assets/refresh.png" alt="Exchange"/> -->
                     </div>   
-                        <div class="form-group">
-                            <label 
-                                for="outputCurrency" 
-                                class="form-label">You Get</label>
-                            <input 
-                                id="outputCurrency" 
-                                class="form-control" 
-                                type="number" 
-                                @input ="calculateConversion('outputCurrency');"
-                                v-model="outputCurrency" />
-                            <select 
-                                class="form-control-selection" v-model="outputCurrencyCode">
-                                <option 
-                                    v-for="(value, key) in currentRates" 
-                                    :key="key" :value="key">{{ key }}</option>
-                            </select>
-                            <button 
-                                type="button"
-                                class="btn"
-                                @click.prevent="convert">Convert</button>
+                    <h3 for="outputCurrency">You Get</h3>
+                    <div class="form-group">
+                        <input 
+                            id="outputCurrency" 
+                            type="number" 
+                            @input ="calculateConversion('outputCurrency');"
+                            v-model="outputCurrency" />
+                        <select v-model="outputCurrencyCode">
+                            <option 
+                                v-for="(value, key) in currentRates" 
+                                :key="key" :value="key">{{ key }}</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <button type="button" class="btn" @click.prevent="convert">Convert</button>
                     </div>
                 </form>
-                <hr>
-                <div class="displayData-container">
-                    <div class="displayData">
-                        <h2 for="inputCurrency" class="form-label">{{ inputCurrencyCode }} : {{ inputCurrency }}</h2>
-                        <h2 for="outputCurrency" class="form-label">{{ outputCurrencyCode }} : {{ outputCurrency }}</h2>
-                    </div>
+                <div class="container_content column" v-if="currentRates">
+                    <h2>Your conversion rate is:</h2>
+                    <h1 for="inputCurrency" 
+                        class="form-label">{{currentRates[inputCurrencyCode].toFixed(4)}} {{ inputCurrencyCode }}</h1>
+                    <h1>=</h1>
+                    <h1 for="outputCurrency" 
+                        class="form-label">{{currentRates[outputCurrencyCode].toFixed(4)}} {{ outputCurrencyCode }}</h1>
                 </div>
            </div>
         </base-card>
-        <hr>
-        <div class="lower-box">
+        <base-card>
             <chart 
                 :sourceCode="inputCurrencyCode" 
                 :targetCode="outputCurrencyCode"
                 :graphData="getExchangeRatesForBaseBetweenDates"
                 @selected-date="fetchPreviousExchangeRates" 
             ></chart>
-        </div>
+        </base-card>
+        <teleport to="body">
+            <dialog-card v-if="showDialog">
+                <h1>Transfer done</h1>
+                <button type="button" class="btn" @click="showDialog = !showDialog">Close</button>
+            </dialog-card>
+        </teleport>
     </div>
 </template>
 
@@ -131,10 +121,9 @@ export default {
     },
     methods:{
         ...mapActions(['fetchCurrentExchangeRatesForBase', 'fetchExchangeRatesForBaseBetweenDates', 'addConversionHistory']),
+        
         fetchPreviousExchangeRates(date){
-            if(date === undefined){
-                date = new Date();
-            }
+            date  = date ? date : new Date();
             const startDate = new Date(date);
             const  endDate = new Date(date);
             startDate.setDate(startDate.getDate() + 3);
@@ -146,16 +135,18 @@ export default {
             }
             this.fetchExchangeRatesForBaseBetweenDates(payload)
         },
+
         calculateConversion(source){
             if(source === 'inputCurrency' && this.currentRates != null){
                 const rate = this.currentRates[this.outputCurrencyCode];
-                this.outputCurrency = parseFloat(rate * this.inputCurrency);
+                this.outputCurrency = parseFloat(rate * this.inputCurrency).toFixed(4);
 
             }else if(source === 'outputCurrency' && this.currentRates != null){
                 const rate = this.currentRates[this.outputCurrencyCode];
-                this.inputCurrency = parseFloat(this.outputCurrency / rate);
+                this.inputCurrency = parseFloat(this.outputCurrency / rate).toFixed(4);
             }
         },
+
         convert(){
             const payload = {
                 inputCurrencyCode: this.inputCurrencyCode,
@@ -167,6 +158,7 @@ export default {
             this.addConversionHistory(payload);
             this.showDialog = true;
         },
+
         exchange(){
             const temp = this.inputCurrencyCode;
             this.inputCurrencyCode = this.outputCurrencyCode;
@@ -178,96 +170,46 @@ export default {
 </script>
 
 <style scoped>
-    .container{
-        background-color: #f9f871;
-        padding:32px;
-    }
-    .form-group{
-        margin:16px;
-    }
-    .form-label{
-       display: block;
-       font-size:2rem;
-       margin-bottom:4px;
-    }
-    .form-control{
-        width:250px;
-        height:40px;
-        font-size:20px;
-        padding:0 16px;
-    }
-    .form-control-selection{
-        width:150px;
-        height:45px;
-        font-size:20px;
-        padding:0 16px;
-    }
-    .btn{
-        cursor: pointer;
-        display: block;
-        margin: 16px 0;
-        width:250px;
-        height:40px;
-        background-color: #ffc75f;
-    }
-    .image-container{
-        width:250px;
-        display:flex;
-        justify-content: center;
-    }
-    .imageClass{
-        cursor: pointer;
-        box-shadow: 3px 3px 10px black;
-        margin:20px;
-        width:40px;
-        height:40px;
-        border-radius: 40%;
-        padding:20px;
-    }
-    .imageClass:hover{
-         box-shadow: 3px 3px 10px grey;
-    }
-    .imageClassArrow{
-        margin:20px;
-        width:40px;
-        height:40px;
-        border-radius: 40%;
-        padding:20px;
-    }
-    .upper-box{
-        display:flex;
-        justify-content: space-between;
-    }
-    .displayData-container{
-        margin:16px;
-        flex-grow: 1;
-        align-self: center;
-        display:flex;
-        justify-content: center;
-    }
-    .displayData{
-        width:100%;
+    .container_content{
         display:flex;
         justify-content: space-around;
-        flex-wrap: wrap;
+        align-items:center;
+        flex-wrap: wrap-reverse;
+    }
+    .container_content .column{
+        flex-direction: column;
+    }
+    .container_content .column h2{
+        padding: 10px 5px;
+    }
+    h3{
+        margin-left:10px;
+    }
+   
+    .form-group .image{
+        cursor: pointer;
+        width: 50px;
+        border: 1px solid grey;
+        border-radius: 6px;
+        padding: 10px 0 10px 16px;
+        background-color: #6930c3;
+        box-shadow: 2px 2px 6px black;
     }
 
-    @media(max-width: 768px){
-        .container{
-            padding:0;
-        }
-        .upper-box{
+    .btn{
+        padding:10px;
+        font-size:1.5em;
+        border:none;
+        border-radius: 6px;
+        font-weight:bold;
+        background-color: #6930c3;
+        color:white;
+    }
+
+    @media(max-width:1000px){
+        .container_content{
             flex-direction: column-reverse;
-        }
-        .lower-box{
-            padding:4px;
-        }
-        
-    }
-
-    @media(max-width: 600px){
-        .displayData{
-            flex-direction: column;
+            margin-bottom:32px;
         }
     }
 </style>
