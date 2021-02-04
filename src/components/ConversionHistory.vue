@@ -1,27 +1,27 @@
 <template>
-    <div v-if="getConversionHistory.length === 0" class="container">
-        <h1>Not converion history present</h1>
-    </div>
-    <div v-else class="container">
-        <ul>
-            <li v-for="item in getConversionHistory" :key="item.dateTime">
-                <div class="transfer_data">
-                    <span>Transfer Amount: {{item.inputCurrency}} {{ item.inputCurrencyCode }}</span>
-                </div>
-                 <div class="received_data">
-                    <span>Received Amount: {{item.outputCurrency}} {{item.outputCurrencyCode}}</span>
-                </div>
-                <div class="date_time">
-                    <span>Date: {{item.dateTime.toLocaleDateString()}}</span>
-                </div>
-            </li>
-        </ul>
+    <div class="container">
+        <h1>Conversion History</h1>
+        <base-card v-if="getConversionHistory.length === 0" class="container_content">
+            <h1>Not conversion history present</h1>
+        </base-card>
+        <base-card v-else class="container_content">
+            <div v-for="item in getConversionHistory" 
+                :key="item.dateTime"
+                class="card">
+                <h1>{{item.inputCurrency}} {{ item.inputCurrencyCode }}</h1>
+                <p>to</p>
+                <h1>{{item.outputCurrency}} {{item.outputCurrencyCode}}</h1>
+                <p class="date">on {{item.dateTime.toLocaleDateString()}}</p>
+            </div>
+        </base-card>
     </div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex';
+import BaseCard from '../UI/BaseCard.vue';
 export default {
+  components: { BaseCard },
     data(){
         return{};
     },
@@ -33,42 +33,31 @@ export default {
 
 <style scoped>
     .container{
-        height:100vh;
-        padding:32px;
-        background-color: #f9f871;
+        min-height:100vh;
     }
-    ul{
-        list-style: none;
-        margin:0px auto;
-    }
-    li{
-        cursor: pointer;
-        background-color:white;
-        width:100%;
-        padding:8px;
-        margin:4px;
-        box-shadow: 3px 3px 10px black;
+    .container_content{
         display:flex;
-        justify-content: space-around;
+        flex-wrap:wrap;
+        justify-content: center;
+        align-items:center;
     }
-    li:hover{
-        box-shadow: 3px 3px 10px grey;
+    .container_content .card{
+        display:flex;
+        justify-content: center;
+        align-items:center;
+        flex-direction: column;
+        max-width:250px;
+        padding:10px;
+        margin:10px;
+        background-color: #6930c3;
+        border-radius:6px;
     }
-    .transfer_data{
-        margin:4px;
+
+    h1{
+        text-align: center;
     }
-    .received_data{
-        margin:4px;
+    .card .date{
+        border-top:1px solid white;
+        padding-top:10px;
     }
-    .date_time{
-        margin:4px;
-    }
-    @media(max-width: 768px){
-         .contianer{
-             padding:32px 4px;
-         }
-         li{
-             padding:0px;
-         }
-     }
 </style>

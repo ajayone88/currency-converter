@@ -1,5 +1,5 @@
 <template>
-    <dialog class="container" open>
+    <dialog class="dialog-container" open>
         <div class="dialog">
             <slot></slot>
         </div>    
@@ -13,23 +13,24 @@ export default {
 </script>
 
 <style scoped>
-    .container{
+    .dialog-container{
         position: fixed;
         top:0;
         left:0;
-        height:100%;
+        height:100vh;
         width:100%;
-        background-color: grey;
-        opacity: 0.8;
+        background-color: rgba(225,225,225,0.8);
     }
     .dialog{
         z-index:100;
+        width:250px;
         padding:16px;
         background-color: whitesmoke;
         border-radius:10px;
         position: absolute;
         left:50%;
         top:40%;
+        text-align: center;
         transform: translate(-50%, 0);
     }
 </style>

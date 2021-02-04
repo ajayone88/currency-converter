@@ -1,31 +1,26 @@
 <template>
-   <div id="baseCard">
+   <div class="base_card">
        <slot></slot>
    </div>
 </template>
 
 <script>
-    export default {
-        data(){
-            return {};
-        }
-    }
+    export default {}
 </script>
 
 <style scoped>
-    #baseCard{
+    .base_card{
         margin:16px auto;
         padding:32px;
-        background: white;
+        background: #2ca3a3;
+        color:white;
         box-shadow: 3px 3px 5px black;
         border-radius:3px;
     }
-    @media(max-width: 768px){
-        #baseCard{
-            background: #f9f871;
+    @media(max-width:450px){
+       .base_card{
+            padding:0px;
             margin:0;
-            padding:4px;
-            box-shadow: none;
-        }
+       }
     }
 </style>
