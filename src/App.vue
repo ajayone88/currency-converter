@@ -1,26 +1,46 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <div>
+        <theHeader @toggleComponent="toggleComponent" />
+        <home v-if="componentName === 'home'"/>
+        <conversionHistory v-else /> 
+        <theFooter />
+    </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
-
+import theHeader from './layout/TheHeader.vue';
+import theFooter from './layout/TheFooter.vue';
+import home from './components/Home.vue';
+import conversionHistory from './components/ConversionHistory.vue';
 export default {
   name: 'App',
   components: {
-    HelloWorld
+    theHeader,
+    theFooter,
+    home,
+    conversionHistory
+  },
+  data(){
+    return {
+      componentName: 'home'
+    };
+  },
+  methods:{
+    toggleComponent(comp){
+      if(comp === 'home'){
+        this.componentName = 'home';
+      }else{
+        this.componentName = 'conversionHistory';
+      }
+    }
   }
 }
 </script>
 
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
+  *{
+    margin:0px;
+    padding:0px;
+    font-family: sans-serif;
+  }
 </style>
