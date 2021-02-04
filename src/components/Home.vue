@@ -144,16 +144,16 @@ export default {
                 startDate: new Date(startDate),
                 endDate: new Date(endDate)
             }
-            this.fetchExchangeRatesForBaseBetweenDates(payload)
+            this.fetchExchangeRatesForBaseBetweenDates(payload);
         },
         calculateConversion(source){
             if(source === 'inputCurrency' && this.currentRates != null){
                 const rate = this.currentRates[this.outputCurrencyCode];
-                this.outputCurrency = parseFloat(rate * this.inputCurrency);
+                this.outputCurrency = parseFloat(rate * this.inputCurrency).toFixed(4);
 
             }else if(source === 'outputCurrency' && this.currentRates != null){
                 const rate = this.currentRates[this.outputCurrencyCode];
-                this.inputCurrency = parseFloat(this.outputCurrency / rate);
+                this.inputCurrency = parseFloat(this.outputCurrency / rate).toFixed(4);
             }
         },
         convert(){
