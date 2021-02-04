@@ -1,5 +1,5 @@
 <template>
-    <div class="container">
+    <div v-if="!showError" class="container">
         <base-card>
             <div class="container_content">
                 <form>
@@ -62,6 +62,10 @@
             </dialog-card>
         </teleport>
     </div>
+    <div v-else class="container">
+       <h1>Generic Error</h1>
+       <p>Service failed please try again later</p>
+    </div>
 </template>
 
 <script>
@@ -78,6 +82,7 @@ export default {
     },
     data(){
         return {
+            showError: false,
             showDialog: false,
             inputCurrencyCode:'EUR',
             outputCurrencyCode:'USD',
@@ -91,6 +96,9 @@ export default {
         this.fetchPreviousExchangeRates();
     },
     watch:{
+        getServiceFailed(){
+            this.showError = this.getServiceFailed;
+        },
         getCurrentExchangeRatesForBase(){
             this.currentRates = this.getCurrentExchangeRatesForBase;
             this.calculateConversion('inputCurrency');
@@ -117,7 +125,7 @@ export default {
         }
     },
     computed:{
-        ...mapGetters(['getCurrentExchangeRatesForBase', 'getExchangeRatesForBaseBetweenDates']),
+        ...mapGetters(['getServiceFailed','getCurrentExchangeRatesForBase', 'getExchangeRatesForBaseBetweenDates']),
     },
     methods:{
         ...mapActions(['fetchCurrentExchangeRatesForBase', 'fetchExchangeRatesForBaseBetweenDates', 'addConversionHistory']),
@@ -205,7 +213,9 @@ export default {
         background-color: #6930c3;
         color:white;
     }
-
+    p{
+        color:red;
+    }
     @media(max-width:1000px){
         .container_content{
             flex-direction: column-reverse;

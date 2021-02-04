@@ -6,7 +6,8 @@ export default createStore({
         return {
             currentExchangeRatesForBase: null,
             exchangeRatesForBaseBetweenDates: null,
-            conversionHistory:[]
+            conversionHistory:[],
+            serviceFailed:false
         }
     },
     getters: {
@@ -18,6 +19,9 @@ export default createStore({
         },
         getConversionHistory(state){
             return state.conversionHistory;
+        },
+        getServiceFailed(state){
+            return state.serviceFailed;
         }
     },
     mutations: {
@@ -29,18 +33,25 @@ export default createStore({
         },
         updateConversionHistory(state, payload){
             state.conversionHistory.push(payload);
+        },
+        updateFail(state, payload){
+            state.serviceFailed = payload;
         }
     },
     actions: {
         fetchCurrentExchangeRatesForBase(context, payload){
+            context.commit('updateFail', false);
             currencyConverter.getRatesForBase(payload.currency)
             .then((response) => response.json()).then(data =>{
                 data['rates'][payload.currency] = 1;
                 context.commit('updateCurrentExchangeRatesForBase', {data: data});
+            }).catch(()=>{
+                context.commit('updateFail', true);
             })
         },
 
         fetchExchangeRatesForBaseBetweenDates(context, payload){
+            context.commit('updateFail', false);
             const startDate = payload.startDate;
             const endDate = payload.endDate;
             const  formattedStartDate = startDate.getFullYear()  + "-" + (startDate.getMonth()+1) + "-" + startDate.getDate();
@@ -52,7 +63,9 @@ export default createStore({
                     data: data
                 };
                 context.commit('updateExchangeRatesForBaseBetweenDates', outputPayload);
-            })
+            }).catch(()=>{
+                context.commit('updateFail', true);
+            });
         },
         addConversionHistory(context, payload){
             context.commit('updateConversionHistory',payload);
