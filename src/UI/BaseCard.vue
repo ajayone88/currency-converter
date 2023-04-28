@@ -1,5 +1,5 @@
 <template>
-   <div class="base_card">
+   <div class="card">
        <slot></slot>
    </div>
 </template>
@@ -9,18 +9,18 @@
 </script>
 
 <style scoped>
-    .base_card{
-        margin:16px auto;
-        padding:32px;
+    .card{
+        padding: 16px;
+        margin: 16px 16px 66px 16px;
         background: #2ca3a3;
         color:white;
         box-shadow: 3px 3px 5px black;
-        border-radius:3px;
+        border-radius:15px;
     }
     @media(max-width:450px){
-       .base_card{
-            padding:0px;
-            margin:0;
-       }
+        .card{
+            margin: 16px 0;
+            width: 100%;
+        }
     }
 </style>
